@@ -65,18 +65,18 @@ def main(url):
 
     model = get_model(graph)
 
-    tf.keras.utils.plot_model(model, 'LSTM_GC.jpg', dpi=600)
-    # model.compile(
-    #     optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0002),
-    #     loss=tf.keras.losses.MeanSquaredError(),
-    # )
+    # tf.keras.utils.plot_model(model, 'LSTM_GC.jpg', dpi=600)
+    model.compile(
+        optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.0002),
+        loss=tf.keras.losses.MeanSquaredError(),
+    )
 
-    # model.fit(
-    #     train_dataset,
-    #     validation_data=val_dataset,
-    #     epochs=epochs,
-    #     callbacks=[tf.keras.callbacks.EarlyStopping(patience=10)],
-    # )
+    model.fit(
+        train_dataset,
+        validation_data=val_dataset,
+        epochs=epochs,
+        callbacks=[tf.keras.callbacks.EarlyStopping(patience=10)],
+    )
 
 
 if __name__ == '__main__':
