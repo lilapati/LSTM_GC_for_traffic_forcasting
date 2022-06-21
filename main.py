@@ -6,6 +6,7 @@ from data import load_data, preprocess, create_tf_dataset, compute_adjacency_mat
 from model import GraphInfo, get_model
 from matplotlib import pyplot as plt
 import numpy as np
+import json
 
 
 
@@ -61,7 +62,7 @@ def main(url):
     )
     print(f"number of nodes: {graph.num_nodes}, number of edges: {len(graph.edges[0])}")
 
-    epochs = 20
+    epochs = 100
 
     model = get_model(graph)
 
@@ -71,12 +72,25 @@ def main(url):
         loss=tf.keras.losses.MeanSquaredError(),
     )
 
-    model.fit(
+    history = model.fit(
         train_dataset,
         validation_data=val_dataset,
         epochs=epochs,
-        callbacks=[tf.keras.callbacks.EarlyStopping(patience=10)],
+        callbacks=[tf.keras.callbacks.ModelCheckpoint(filepath='LSTM_GC.h5',
+                                                    monitor='val_loss',
+                                                    verbose=2,
+                                                    save_best_only=True,
+                                                    save_weights_only=True,
+                                                    mode='auto',
+                                                    save_freq='epoch'),
+                tf.keras.callbacks.EarlyStopping(patience=10)],
     )
+
+    with open('history.json', 'wt') as out:
+        json.dump(history.history, out)
+
+    acc = model.evaluate(test_dataset)
+    print(acc)
 
 
 if __name__ == '__main__':
